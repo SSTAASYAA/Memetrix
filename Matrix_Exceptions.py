@@ -5,7 +5,7 @@ class MatrixInputError(Exception):
     """
 
     def __init__(self, message: str = None):
-        self.message = ("Invalid matrix input: check dimensions, data format, and value types.") if message is None else message
+        self.message = ("Invalid matrix input: check dimensions, data format, and value types") if message is None else message
         super().__init__(self.message)
 
 
@@ -20,7 +20,7 @@ class MatrixMultiplicationError(Exception):
         self.secondMatrix = matrix_2
         self.message = (
             f"Cannot multiply matrices: {self.firstMatrix.rows} and {self.secondMatrix.cols} are incompatible. " 
-            f"Columns of first ({self.firstMatrix.cols}) must equal rows of second ({self.secondMatrix.rows})."
+            f"Columns of first ({self.firstMatrix.cols}) must equal rows of second ({self.secondMatrix.rows})"
         )
         super().__init__(self.message)
 

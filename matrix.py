@@ -26,25 +26,25 @@ class Matrix:
             *[self._extend_row([], rows) for _ in range(cols - len(elements))]
         ]
     
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.elements}"
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> int | float:
         if isinstance(key, (list, tuple)) and len(key) == 2:
             if self.cols == 1: 
-                raise IndexError(f"Can't access to the element with index {key}.")
+                raise IndexError(f"Can't access to the element with index {key}")
             if not 1 <= key[0] <= self.cols or not 1 <= key[1] <= self.rows:
                 raise ValueError(f"Indeces must be: [1 <= {key[0]} <= {self.cols}, 1 <= {key[1]} <= {self.rows}]")
             return self.elements[key[0] - 1][key[1] - 1]
         elif isinstance(key, int):
             if self.cols == 1:
                 if key < 1 or key > self.rows:
-                    raise ValueError(f"Index must be 1 <= index <= {self.rows}.")
+                    raise ValueError(f"Index must be 1 <= index <= {self.rows}")
                 return self.elements[0][key - 1]
             else:
                 return self.elements[key - 1]
         else:
-            raise TypeError("Invalid index type.")
+            raise TypeError("Invalid index type")
 
     def _extend_row(self, row: list[int | float], size: int) -> list[int | float]:
         return row + [0] * (size - len(row))
