@@ -62,6 +62,7 @@ def show_matrix_multiplication(A_name:str, A: Matrix, b_name: str, B: Matrix, re
     s += f"\n{result_name} = {result_matrix}\n"
     print(s)
 
+m = Matrix(1, 2, [[1, 2]])
 A_name:str = input("Введите название первой матрицы:\n")
 a = input_matrix()
 B_name:str = input("Введите название второй матрицы:\n")

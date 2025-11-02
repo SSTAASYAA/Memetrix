@@ -12,12 +12,12 @@ class Matrix:
         else:
             if not isinstance(elements, (list, tuple)) or not all([isinstance(row, (list, tuple)) for row in elements]):
                 raise TypeError(f"Type of elements must be list or tuple and all types of each row must be list or tuple.")
-            elif not len(elements) <= cols:
-                raise MatrixInputError(f"Number of rows in elements must be lower or equal {cols}, but {len(elements)} found.")
-            elif not all([len(row) <= rows for row in elements]):
-                raise MatrixInputError(f"Number of elements in each row mush be lower or equal {rows}, but more found.")
+            elif not len(elements) <= rows:
+                raise MatrixInputError(f"Number of rows in elements must be lower or equal {rows}, but {len(elements)} found.")
+            elif not all([len(row) <= cols for row in elements]):
+                raise MatrixInputError(f"Number of elements in each row mush be lower or equal {cols}, but more found.")
             elif not all([isinstance(el, SupportsInt) for row in elements for el in row]):
-                raise TypeError(f"Type of each element in elements must be int or float, but another found.")
+                raise TypeError(f"Type of each element in elements must be incompatible with int, but another found.")
 
         self.cols = cols
         self.rows = rows
@@ -67,7 +67,7 @@ class Matrix:
 
     def _matrix_multiply(self, other):
         if self.cols != other.rows:
-            raise ValueError(f"Размеры несовместимы: {self.rows}x{self.cols} и {other.rows}x{other.cols}")
+            raise ValueError(f"matrix with sizes {self.rows}x{self.cols} is not compatible with matrix with sizes {other.rows}x{other.cols}")
 
         result_rows: int = self.rows
         result_cols: int = other.cols
