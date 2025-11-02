@@ -1,3 +1,14 @@
+class MatrixInputError(Exception):
+    """
+    Raised when user provides invalid input for matrix creation or operations.
+    This includes invalid dimensions, malformed data, or incorrect value types.
+    """
+
+    def __init__(self, message: str = None):
+        self.message = ("Invalid matrix input: check dimensions, data format, and value types.") if message is None else message
+        super().__init__(self.message)
+
+
 class MatrixMultiplicationError(Exception):
     """
     Raised when attempting to multiply two matrices with incompatible dimensions.
