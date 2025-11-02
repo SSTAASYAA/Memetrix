@@ -1,5 +1,5 @@
-from typing import List
-from Matrix_Exceptions import *
+from typing import List, SupportsInt
+from matrix_exceptions import *
 
 class Matrix:
     def __init__(self, rows: int, cols: int, elements: list[list[int]] = []) -> None:
@@ -16,7 +16,7 @@ class Matrix:
                 raise MatrixInputError(f"Number of rows in elements must be lower or equal {cols}, but {len(elements)} found.")
             elif not all([len(row) <= rows for row in elements]):
                 raise MatrixInputError(f"Number of elements in each row mush be lower or equal {rows}, but more found.")
-            elif not all([isinstance(el, (int, float)) for row in elements for el in row]):
+            elif not all([isinstance(el, SupportsInt) for row in elements for el in row]):
                 raise TypeError(f"Type of each element in elements must be int or float, but another found.")
 
         self.cols = cols
@@ -49,45 +49,41 @@ class Matrix:
     def _extend_row(self, row: list[int | float], size: int) -> list[int | float]:
         return row + [0] * (size - len(row))
 
+    def __mul__(self, other):
+        if isinstance(other, Matrix):
+            return self._matrix_multiply(other)
+        elif isinstance(other, (int)):
+            return self._scalar_multiply(other)
+        else:
+            raise TypeError(f"type(other) must be Matrix or compatible with int, but ({type(other)}) found.")
 
-    # def __mul__(self, other):
-    #     if isinstance(other, Matrix):
-    #         return self._matrix_multiply(other)
-    #     elif isinstance(other, (int)):
-    #         return self._scalar_multiply(other)
-    #     else:
-    #         raise TypeError(f"Нельзя умножить Matrix на {type(other)}")
+    def __rmul__(self, other):
+        if isinstance(other, (SupportsInt)):
+            return self._scalar_multiply(other)
+        elif isinstance(other, Matrix):
+            return other._matrix_multiply(self)
+        else:
+            raise TypeError(f"type(other) must be Matrix or compatible with int, but ({type(other)}) found.")
 
-    # def __rmul__(self, other):
-    #     if isinstance(other, (int)):
-    #         return self._scalar_multiply(other)
-    #     elif isinstance(other, Matrix):
-    #         return other._matrix_multiply(self)
-    #     else:
-    #         raise TypeError(f"Нельзя умножить {type(other)} на Matrix")
+    def _matrix_multiply(self, other):
+        if self.cols != other.rows:
+            raise ValueError(f"Размеры несовместимы: {self.rows}x{self.cols} и {other.rows}x{other.cols}")
 
-    # def _matrix_multiply(self, other):
-    #     if self.cols != other.rows:
-    #         raise ValueError(f"Размеры несовместимы: {self.rows}x{self.cols} и {other.rows}x{other.cols}")
+        result_rows: int = self.rows
+        result_cols: int = other.cols
+        result_elems:List[List[SupportsInt]] = [[0] * result_cols for _ in range(result_rows)]
+        for i in range(result_rows):
+            for j in range(result_cols):
+                elem: int = 0
+                for k in range(result_rows):
+                    elem += self.elements[i][k] * other.elements[k][j]
+                result_elems[i][j] = elem
 
-    #     result_name: str = f"{self.name} \\cdot {other.name}"
-    #     result_rows: int = self.rows
-    #     result_cols: int = other.cols
-    #     result_elems:List[List[SupportsInt]] = [[0] * result_cols for _ in range(result_rows)]
-    #     for i in range(result_rows):
-    #         for j in range(result_cols):
-    #             elem: int = 0
-    #             for k in range(result_rows):
-    #                 elem += self.elements[i][k] * other.elements[k][j]
-    #             result_elems[i][j] = elem
+        return Matrix(result_rows, result_cols, result_elems)
 
-    #     return Matrix(result_name, result_rows, result_cols, result_elems)
-
-    # def _scalar_multiply(self, other: int):
-    #     result_name: str = f"{other} {self.name}"
-    #     result_elems:List[List[SupportsInt]] = [[0] * self.cols for _ in range(self.rows)]
-    #     for i in range(self.rows):
-    #         for j in range(self.cols):
-    #             result_elems[i][j] = self.elements[i][j] * other
-    #     return Matrix(result_name, self.rows, self.cols, result_elems)
-
+    def _scalar_multiply(self, other: SupportsInt):
+        result_elems:List[List[SupportsInt]] = [[0] * self.cols for _ in range(self.rows)]
+        for i in range(self.rows):
+            for j in range(self.cols):
+                result_elems[i][j] = self.elements[i][j] * other
+        return Matrix(self.rows, self.cols, result_elems)
